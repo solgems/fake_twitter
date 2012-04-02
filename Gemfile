@@ -8,6 +8,7 @@ gem 'thin'
 group:development, :test do
     gem 'sqlite3'
     gem 'powder'
+    gem 'taps'
 end
 
 group:production do
