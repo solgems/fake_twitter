@@ -1,6 +1,8 @@
 FirstApp::Application.routes.draw do
   # match '<desired path>', to: '<controller_name#action>'
 
+  match '/signup',  to: 'users#new'
+
   # get "static_pages/home"
   root to: 'static_pages#home'
   
@@ -14,8 +16,6 @@ FirstApp::Application.routes.draw do
   match '/contact', to: 'static_pages#contact'
 
   resources :microposts
-
-  resources :users
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
