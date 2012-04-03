@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.2'
 gem 'thin'
+gem 'bcrypt-ruby'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -9,6 +10,7 @@ group:development, :test do
     gem 'sqlite3'
     gem 'powder'
     gem 'taps'
+    gem 'annotate', '~> 2.4.1.beta'
 end
 
 group:production do
