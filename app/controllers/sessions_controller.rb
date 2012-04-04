@@ -10,7 +10,8 @@ class SessionsController < ApplicationController
 			# sign the user in and redirect to the user's home page
 			# sign_in is defined in sessions_helper
 			sign_in user
-			redirect_to user
+			# take user back to intended path if any
+			redirect_back_or user
 		else
 			# create an error message and re-render the signin form
 			# flash will persist for 1 request, but render is not considered a request

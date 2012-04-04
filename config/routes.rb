@@ -1,6 +1,6 @@
 FirstApp::Application.routes.draw do
 
-  # default gives <index new edit show create destroy>
+  # default gives <index new edit show create update destroy>
   resources :microposts
   resources :users
   resources :sessions, only: [:new, :create, :destroy]

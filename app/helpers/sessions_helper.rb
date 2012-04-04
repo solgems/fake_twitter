@@ -24,16 +24,35 @@ module SessionsHelper
     @current_user ||= user_from_remember_token
   end
 
-   def sign_out
+  # check if current user is the user id supplied
+  def current_user?(user)
+    user == current_user
+  end
+
+  def sign_out
     current_user = nil
     cookies.delete(:remember_token)
   end
 
-   private
+  def redirect_back_or(default)
+    redirect_to(session[:return_to] || default)
+    clear_return_to
+  end
+
+  def store_location
+  	# use the request object to get the fullpath
+    session[:return_to] = request.fullpath
+  end
+
+  private
 
     def user_from_remember_token
       remember_token = cookies[:remember_token]
       # look for any user using that cookie, unless there is no cookie found
       User.find_by_remember_token(remember_token) unless remember_token.nil?
+    end
+
+    def clear_return_to
+    	session.delete(:return_to)
     end
 end
