@@ -3,3 +3,10 @@
 
 en:
   hello: "Hello world"
+
+# Listing 7.30. Hacking a better error message for missing passwords. 
+en:
+  activerecord:
+    attributes:
+      user:
+        password_digest: "Password"
