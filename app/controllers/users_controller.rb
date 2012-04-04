@@ -25,11 +25,6 @@ class UsersController < ApplicationController
   # GET /users/new.json
   def new
     @user = User.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @user }
-    end
   end
 
   # GET /users/1/edit
@@ -39,17 +34,20 @@ class UsersController < ApplicationController
 
   # POST /users
   # POST /users.json
+  # create gets called when the user submits the form at new.html.erb
   def create
+    # params[:user] contains the hash of user pre-filled details
     @user = User.new(params[:user])
 
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render json: @user, status: :created, location: @user }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    # try to do a save
+    if @user.save
+      # save successful returns true
+      # goto the show view
+      # it will take you to user_path/@user.id
+      flash[:success] = "Welcome to Fake Twitter, #{@user.name}"
+      redirect_to @user
+    else
+      render 'new'
     end
   end
 
