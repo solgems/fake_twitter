@@ -16,7 +16,7 @@
         # <div class="alert alert-success">Welcome to the Sample App!</div>
       %>
       <% flash.each do |key, value| %>
-        <div class="alert alert-<%= key %>"><%= value %></div>
+        <%= content_tag(:div, value, class: "alert alert-#{key}") %>
       <% end %>
       <%= yield %>
       <%= render 'layouts/footer' %>
