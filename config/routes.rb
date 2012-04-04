@@ -1,11 +1,14 @@
 FirstApp::Application.routes.draw do
 
+  # default gives <index new edit show create destroy>
   resources :microposts
   resources :users
+  resources :sessions, only: [:new, :create, :destroy]
   # match '<desired path>', to: '<controller_name#action>'
 
   match '/signup',  to: 'users#new'
-
+  match '/signin',  to: 'sessions#new'
+  match '/signout', to: 'sessions#destroy', via: :delete
   # get "static_pages/home"
   root to: 'static_pages#home'
   

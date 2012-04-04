@@ -43,8 +43,10 @@ class UsersController < ApplicationController
     if @user.save
       # save successful returns true
       # goto the show view
-      # it will take you to user_path/@user.id
+      # sign_in is provided by sessions_helper
+      sign_in @user
       flash[:success] = "Welcome to Fake Twitter, #{@user.name}"
+      # it will take you to user_path/@user.id action
       redirect_to @user
     else
       render 'new'

@@ -16,6 +16,8 @@ class User < ActiveRecord::Base
 	# this method alone will compare password with password_confirmation and finally with the password_digest
 	# requires bcrypy-ruby gem
 	has_secure_password
+	# this method will be called when @user.save is called and triggered just before it's saved
+	before_save :create_remember_token
 
 	validates :password, length: { minimum: 6 }
 	validates :password_confirmation, presence: true
@@ -29,4 +31,11 @@ class User < ActiveRecord::Base
 	
 	# 1 user have many microposts
 	has_many :microposts
+
+	# cant be called from outside of this object, eg. via rails console
+	private
+	    def create_remember_token
+    	  # SecureRandom is from the standard ruby library
+	      self.remember_token = SecureRandom.urlsafe_base64
+	    end
 end
