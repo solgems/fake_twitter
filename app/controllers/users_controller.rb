@@ -5,6 +5,8 @@ class UsersController < ApplicationController
   before_filter :correct_user,   only: [:edit, :update]
   # to prevent admin users from even directly access the delete action
   before_filter :admin_user,     only: :destroy
+  # ensure that signed-in user cannot access sign up page
+  before_filter :not_signed_in_user, only: [:new, :create]
 
   def index
     @users = User.paginate(page: params[:page], per_page: 30)
@@ -60,9 +62,16 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    deleted_user = User.find(params[:id]).destroy
-    flash[:success] = "User #{deleted_user.name} was successfully deleted."
-    redirect_to users_path
+    user = User.find(params[:id])
+    # if admin tries to delete himself
+    if current_user?(user)
+      flash[:error] = "Admins are not allowed to self destruct"
+      redirect_to users_path
+    else
+      user.destroy
+      flash[:success] = "User #{user.name} was successfully deleted."
+      redirect_to users_path
+    end
   end
 
   private
@@ -73,7 +82,10 @@ class UsersController < ApplicationController
         store_location  #stores the intended full path
         redirect_to signin_path, notice: "Please sign in."
       end
+    end
 
+    def not_signed_in_user
+      redirect_to @current_user if signed_in?
     end
 
     def correct_user
@@ -83,6 +95,7 @@ class UsersController < ApplicationController
     end
 
     def admin_user
+      # non admin are not allowed to access the destroy action
       redirect_to(root_path) unless current_user.admin?
     end
 
