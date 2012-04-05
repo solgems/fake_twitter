@@ -1,8 +1,10 @@
 class UsersController < ApplicationController
   # ensure only signed-in users can edit and update
-  before_filter :signed_in_user, only: [:index, :edit, :update]
+  before_filter :signed_in_user, only: [:index, :show, :edit, :update, :destroy]
   # ensure signed-in users can only their their own page
   before_filter :correct_user,   only: [:edit, :update]
+  # to prevent admin users from even directly access the delete action
+  before_filter :admin_user,     only: :destroy
 
   def index
     @users = User.paginate(page: params[:page], per_page: 30)
@@ -11,11 +13,6 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
     @user = User.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @user }
-    end
   end
 
   # GET /users/new
@@ -63,13 +60,9 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user = User.find(params[:id])
-    @user.destroy
-
-    respond_to do |format|
-      format.html { redirect_to users_url }
-      format.json { head :no_content }
-    end
+    deleted_user = User.find(params[:id]).destroy
+    flash[:success] = "User #{deleted_user.name} was successfully deleted."
+    redirect_to users_path
   end
 
   private
@@ -87,6 +80,10 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
       # only if the currently logged in user match the user edit page they are trying to access
       redirect_to(root_path) unless current_user?(@user)
+    end
+
+    def admin_user
+      redirect_to(root_path) unless current_user.admin?
     end
 
 end
