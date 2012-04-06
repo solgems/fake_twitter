@@ -1,7 +1,11 @@
 FirstApp::Application.routes.draw do
 
   # default gives <index new edit show create update destroy>
-  resources :microposts
+  
+  # POST  /microposts create  create a new micropost
+  # DELETE  /microposts/1 destroy delete micropost with id 1
+  resources :microposts, only:[:create, :destroy]
+
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
   # match '<desired path>', to: '<controller_name#action>'

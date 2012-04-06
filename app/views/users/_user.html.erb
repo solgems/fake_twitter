@@ -1,6 +1,6 @@
 <% # user is automagically passed to this partial? %>
 <li>
-  <%= gravatar_for user %>
+  <%= gravatar_for user, size: 52 %>
   <%= link_to user.name, user %>
   <% # admin can't delete themselves! %>
   <% if current_user.admin? && !current_user?(user) %>

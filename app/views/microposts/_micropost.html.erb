@@ -1,0 +1,11 @@
+<li>
+  <span class="content"><%= micropost.content %></span>
+  <span class="timestamp">
+    <% # awesome time_ago_in_words helper method! %>
+    Posted <%= time_ago_in_words(micropost.created_at) %> ago.
+  </span>
+  <% # current_user? from sessions helper %>
+  <% if current_user?(micropost.user) %>
+    <%= link_to "delete", micropost, method: :delete, confirm: "You sure?", title:   micropost.content %>
+  <% end %>
+</li>

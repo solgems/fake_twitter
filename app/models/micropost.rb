@@ -11,11 +11,18 @@
 
 class Micropost < ActiveRecord::Base
 
-	# white list of editable attributes
-	attr_accessible :content, :user_id
+	# white list of editable attributes through the web
+	# allowing userid is dangerous, hacker can assign microposts to other users
+	attr_accessible :content
 	
-	# 1 micropost belongs to 1 user
+	# Association methods available upon setting up relationship
+	# micropost.user	Return the User object associated with the micropost.
 	belongs_to :user
 	
-	validates :content, :length => { :maximum => 140 }
+	# each micropost must have a userid
+	validates :user_id, presence: true
+	validates :content, presence: true, length: { maximum: 140 }
+
+	# descending order from newest to oldest
+	default_scope order: 'microposts.created_at DESC'
 end

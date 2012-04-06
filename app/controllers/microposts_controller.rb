@@ -1,83 +1,39 @@
 class MicropostsController < ApplicationController
-  # GET /microposts
-  # GET /microposts.json
-  def index
-    @microposts = Micropost.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @microposts }
-    end
-  end
-
-  # GET /microposts/1
-  # GET /microposts/1.json
-  def show
-    @micropost = Micropost.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @micropost }
-    end
-  end
-
-  # GET /microposts/new
-  # GET /microposts/new.json
-  def new
-    @micropost = Micropost.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @micropost }
-    end
-  end
-
-  # GET /microposts/1/edit
-  def edit
-    @micropost = Micropost.find(params[:id])
-  end
+  # signed_in_user defined in sessions_helper
+  before_filter :signed_in_user only: [:create, :destroy]
+  before_filter :correct_user, only: :destroy
 
   # POST /microposts
-  # POST /microposts.json
   def create
-    @micropost = Micropost.new(params[:micropost])
-
-    respond_to do |format|
-      if @micropost.save
-        format.html { redirect_to @micropost, notice: 'Micropost was successfully created.' }
-        format.json { render json: @micropost, status: :created, location: @micropost }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @micropost.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PUT /microposts/1
-  # PUT /microposts/1.json
-  def update
-    @micropost = Micropost.find(params[:id])
-
-    respond_to do |format|
-      if @micropost.update_attributes(params[:micropost])
-        format.html { redirect_to @micropost, notice: 'Micropost was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @micropost.errors, status: :unprocessable_entity }
-      end
+    # current_user provided by sessions_helper
+    @micropost = current_user.microposts.build(params[:micropost])
+    if @micropost.save
+      flash[:success] = "Micropost created!"
+      redirect_to root_path
+    else
+      # failed to save micropost, go to user's home page
+      # @micropost is passed to the view for error messages
+      @feed_items = []
+      render 'static_pages/home'
     end
   end
 
   # DELETE /microposts/1
-  # DELETE /microposts/1.json
   def destroy
-    @micropost = Micropost.find(params[:id])
-    @micropost.destroy
-
-    respond_to do |format|
-      format.html { redirect_to microposts_url }
-      format.json { head :no_content }
-    end
   end
+
+  private
+    # to check that the current user actually has a micropost with the given id
+    def correct_user
+      # @micropost = Micropost.find_by_id(params[:id]) is valid too but
+      # for security purposes it is a good practice always to run lookups through the association
+      # other users can fake the DELETE action using curl
+      @micropost = current_user.microposts.find_by_id(params[:id])
+      redirect_to root_path if micropost.nil?
+
+      # alternatively, .find raises an exception when the micropost doesn't exist
+      # @micropost = current_user.microposts.find(params[:id])
+      # rescue
+      #   redirect_to root_path
+    end
 end

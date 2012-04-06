@@ -29,6 +29,16 @@ module SessionsHelper
     user == current_user
   end
 
+  # used in before_filters to redirect non-signed-in users away
+  def signed_in_user
+      # shortcut for setting flash[:notice]
+      # redirect_to signin_path, notice: "Please sign in." unless signed_in?
+      unless signed_in?
+        store_location  #stores the intended full path
+        redirect_to signin_path, notice: "Please sign in."
+      end
+    end
+
   def sign_out
     current_user = nil
     cookies.delete(:remember_token)

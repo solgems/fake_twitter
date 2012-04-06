@@ -1,5 +1,6 @@
 <% provide(:title, @user.name) %>
 <div class="row">
+
   <aside class="span4">
     <section>
       <h1>
@@ -8,4 +9,18 @@
       </h1>
     </section>
   </aside>
+
+  <div class="span8">
+  	<% # empty list won’t be displayed when the user has no microposts %>
+    <% if @user.microposts.any? %>
+      <h3>Microposts (<%= @user.microposts.count %>)</h3>
+      <ol class="microposts">
+      	<%  # renders microposts/_micropost.html.erb 
+      		# @microposts from users_controller#show
+      	%>
+        <%= render @microposts %>
+      </ol>
+      <%= will_paginate @microposts %>
+    <% end %>
+  </div>
 </div>

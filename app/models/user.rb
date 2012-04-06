@@ -30,7 +30,19 @@ class User < ActiveRecord::Base
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 	
 	# 1 user have many microposts
-	has_many :microposts
+	# user.microposts	Return an array of the user’s microposts.
+	# user.microposts.create(arg)	Create a micropost (user_id = user.id).
+	# user.microposts.create!(arg)	Create a micropost (exception on failure).
+	# user.microposts.build(arg)	Return a new Micropost object (user_id = user.id).
+	# microposts to be destroyed when the user itself is destroyed
+	has_many :microposts, dependent: :destroy
+
+	# micropost feed method by selecting all the microposts with user_id equal to the current user’s id
+	def feed
+	    # This is preliminary. See "Following users" for the full implementation.
+		Micropost.where("user_id = ?", id)
+	end
+
 
 	# cant be called from outside of this object, eg. via rails console
 	private

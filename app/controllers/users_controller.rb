@@ -15,6 +15,8 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
     @user = User.find(params[:id])
+    # don't forget the pagination for will_paginate @microposts
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   # GET /users/new
@@ -75,14 +77,6 @@ class UsersController < ApplicationController
   end
 
   private
-     def signed_in_user
-      # shortcut for setting flash[:notice]
-      # redirect_to signin_path, notice: "Please sign in." unless signed_in?
-      unless signed_in?
-        store_location  #stores the intended full path
-        redirect_to signin_path, notice: "Please sign in."
-      end
-    end
 
     def not_signed_in_user
       redirect_to @current_user if signed_in?
