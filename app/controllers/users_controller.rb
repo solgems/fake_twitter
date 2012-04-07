@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  # register call-backs using before_filter
   # ensure only signed-in users can edit and update
   before_filter :signed_in_user, only: [:index, :show, :edit, :update, :destroy]
   # ensure signed-in users can only their their own page

@@ -1,4 +1,5 @@
 class MicropostsController < ApplicationController
+  # register call-backs using before_filter
   # signed_in_user defined in sessions_helper
   before_filter :signed_in_user, only: [:create, :destroy]
   before_filter :correct_user, only: :destroy
@@ -12,8 +13,8 @@ class MicropostsController < ApplicationController
       redirect_to root_path
     else
       # failed to save micropost, go to user's home page
-      # @micropost is passed to the view for error messages
-      @feed_items = []
+      # @micropost is retained with error messages and passed to the view
+      @feed_items = current_user.feed.paginate(page: params[:page])
       render 'static_pages/home'
     end
   end
