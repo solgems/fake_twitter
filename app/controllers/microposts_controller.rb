@@ -15,6 +15,8 @@ class MicropostsController < ApplicationController
       # failed to save micropost, go to user's home page
       # @micropost is retained with error messages and passed to the view
       @feed_items = current_user.feed.paginate(page: params[:page])
+
+      # render instead of redirect, we want to bypass static_pages_controller#home
       render 'static_pages/home'
     end
   end
