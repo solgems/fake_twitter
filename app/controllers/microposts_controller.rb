@@ -1,6 +1,6 @@
 class MicropostsController < ApplicationController
   # signed_in_user defined in sessions_helper
-  before_filter :signed_in_user only: [:create, :destroy]
+  before_filter :signed_in_user, only: [:create, :destroy]
   before_filter :correct_user, only: :destroy
 
   # POST /microposts
@@ -20,6 +20,8 @@ class MicropostsController < ApplicationController
 
   # DELETE /microposts/1
   def destroy
+    @micropost.destroy
+    redirect_back_or root_path
   end
 
   private
@@ -29,7 +31,7 @@ class MicropostsController < ApplicationController
       # for security purposes it is a good practice always to run lookups through the association
       # other users can fake the DELETE action using curl
       @micropost = current_user.microposts.find_by_id(params[:id])
-      redirect_to root_path if micropost.nil?
+      redirect_to root_path if @micropost.nil?
 
       # alternatively, .find raises an exception when the micropost doesn't exist
       # @micropost = current_user.microposts.find(params[:id])
