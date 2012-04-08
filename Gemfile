@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.2'
 gem 'thin'
 gem 'bcrypt-ruby'
+gem 'faker', '1.0.1'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -11,7 +12,6 @@ group:development, :test do
     gem 'powder'
     gem 'taps'
     gem 'annotate', '~> 2.4.1.beta'
-    gem 'faker', '1.0.1'
 end
 
 group:production do
