@@ -1,0 +1,18 @@
+<%
+# follow/unfollow form doesn’t have any content other than the button
+# but it still needs to send the followed_id
+# which we accomplish with the hidden_field method
+# remote:true allow the form to be handled by javascript, ajax!
+%>
+
+<%= form_for(current_user.relationships.build(followed_id: @user.id), remote:true) do |f| %>
+  <div><%= f.hidden_field :followed_id %></div>
+  <%= f.submit "Follow", :class => "btn btn-large btn-primary" %>
+<% end %>
+
+<% 
+# produces the following HTML:
+#     <input id="followed_relationship_followed_id"
+#     name="followed_relationship[followed_id]"
+#     type="hidden" value="3" />
+%>

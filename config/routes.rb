@@ -4,11 +4,22 @@ FirstApp::Application.routes.draw do
   
   # POST  /microposts create  create a new micropost
   # DELETE  /microposts/1 destroy delete micropost with id 1
-  resources :microposts, only:[:create, :destroy]
+  resources :microposts, only: [:create, :destroy]
 
-  resources :users
+  resources :users do
+    # member method means that the routes respond to URIs containing the user id
+    # the other possibility, collection, works without the id
+    member do
+      # GET /users/1/following  following following_user_path(1)
+      # GET /users/1/followers  followers followers_user_path(1)
+      get :following, :followers
+    end
+  end
+
   resources :sessions, only: [:new, :create, :destroy]
   # match '<desired path>', to: '<controller_name#action>'
+
+  resources :relationships, only: [:create, :destroy]
 
   match '/signup',  to: 'users#new'
   match '/signin',  to: 'sessions#new'

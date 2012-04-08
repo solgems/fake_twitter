@@ -29,6 +29,7 @@ class User < ActiveRecord::Base
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
 	
+	# RELATIONSHIPS
 	# 1 user have many microposts
 	# user.microposts	Return an array of the user’s microposts.
 	# user.microposts.create(arg)	Create a micropost (user_id = user.id).
@@ -37,12 +38,46 @@ class User < ActiveRecord::Base
 	# microposts to be destroyed when the user itself is destroyed
 	has_many :microposts, dependent: :destroy
 
+	# FOLLOWING, one 'follower_id' points to many 'followed_id'
+	# destroying a user should also destroy that user’s relationships
+	# we need to explicitly declare the foreign_key in this case as there is no user_id in relationships
+	# when the foreign key for a User model object is user_id, Rails infers the association automatically: by default
+	has_many :relationships, foreign_key: "follower_id", dependent: :destroy
+
+	# "has_many :followeds, through: :relationships" is weird, so we use source: :followed
+	has_many :followed_users, through: :relationships, source: :followed
+
+	# FOLLOWERS, one 'followed_id' points to many 'follower_id'
+	# specify the model for this self-named relationship
+	has_many :reverse_relationships, foreign_key: "followed_id",
+										class_name:  "Relationship",
+										dependent:   :destroy
+	has_many :followers, through: :reverse_relationships, source: :follower
+
 	# micropost feed method by selecting all the microposts with user_id equal to the current user’s id
 	def feed
 	    # This is preliminary. See "Following users" for the full implementation.
 		Micropost.where("user_id = ?", id)
 	end
 
+	# same as self.relationships, self can be omitted
+	# checks to see if a followed user with that id exists in the database
+	def following?(other_user)
+		relationships.find_by_followed_id(other_user.id)
+	end
+
+	# calls create! through the relationships association to create the following relationship
+	def follow!(other_user)
+		relationships.create!(followed_id: other_user.id)
+	end
+
+	def unfollow!(other_user)
+		relationships.find_by_followed_id(other_user.id).destroy
+	end
+
+	def feed
+		Micropost.from_users_followed_by(self)
+	end
 
 	# cant be called from outside of this object, eg. via rails console
 	private

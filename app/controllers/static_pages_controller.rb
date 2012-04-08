@@ -4,6 +4,8 @@ class StaticPagesController < ApplicationController
     # @micropost to be used in views/static_pages/home.html.erb
     # and eventually passed on to partials in views/shared/
     if signed_in?
+      # create an empty micropost using .build
+      # better than Micropost.new, user_id will be filled!
       @micropost = current_user.microposts.build
       @feed_items = current_user.feed.paginate(page: params[:page])
     end

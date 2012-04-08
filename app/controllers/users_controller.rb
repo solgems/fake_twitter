@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   # register call-backs using before_filter
   # ensure only signed-in users can edit and update
-  before_filter :signed_in_user, only: [:index, :show, :edit, :update, :destroy]
+  before_filter :signed_in_user, only: [:index, :show, :edit, :update, :destroy, :following, :followers]
   # ensure signed-in users can only their their own page
   before_filter :correct_user,   only: [:edit, :update]
   # to prevent admin users from even directly access the delete action
@@ -75,6 +75,22 @@ class UsersController < ApplicationController
       flash[:success] = "User #{user.name} was successfully deleted."
       redirect_to users_path
     end
+  end
+
+  # we render show_follow as the erb is identical
+  # we use render because there is no show_follow action
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.followed_users.paginate(page: params[:page])
+    render 'show_follow'
+  end
+
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(page: params[:page])
+    render 'show_follow'
   end
 
   private
