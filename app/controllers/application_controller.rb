@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include SessionsHelper
 
   # prevent users from accessing private info using browser's back after log-out
-  # before_filter :set_no_cache
+  before_filter :set_no_cache
 
   def set_no_cache
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
