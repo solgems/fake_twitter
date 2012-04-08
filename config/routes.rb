@@ -1,4 +1,4 @@
-FirstApp::Application.routes.draw do
+FakeTwitter::Application.routes.draw do
 
   # default gives <index new edit show create update destroy>
   
